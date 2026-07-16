@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Espresso Escape — A cozy, funny antigravity adventure. Defy gravity as a cute coffee cup, dodge grumpy mugs and spinning croissants, and top the leaderboard!" />
+  <title>Espresso Escape — Cozy Antigravity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,800;1,600&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div id="app">
+    <!-- ═══════════════ WELCOME SCREEN ═══════════════ -->
+    <section id="screen-welcome" class="screen active">
+      <div class="welcome-container">
+        <div class="welcome-header-badge">☕ Cozy Cafe Edition</div>
+        
+        <div class="welcome-hero">
+          <div class="hero-character-box">
+            <!-- Animated Cup Character in Welcome -->
+            <div class="welcome-cup" id="welcome-cup-preview">
+              <div class="cup-steam">
+                <span style="--i:1"></span>
+                <span style="--i:2"></span>
+                <span style="--i:3"></span>
+              </div>
+              <div class="cup-body">
+                <div class="cup-face">
+                  <div class="cup-eye left"></div>
+                  <div class="cup-eye right"></div>
+                  <div class="cup-smile"></div>
+                </div>
+                <div class="cup-handle"></div>
+              </div>
+            </div>
+            <div class="welcome-cup-shadow"></div>
+          </div>
+          
+          <h1 class="welcome-title">Espresso <span class="accent-text">Escape</span></h1>
+          <p class="welcome-subtitle">Defy the pull. Save the brew.</p>
+        </div>
+
+        <!-- Character Skin Customization Feature -->
+        <div class="skin-selector-box">
+          <p class="skin-title">Choose Pip's Cup Skin:</p>
+          <div class="skin-options">
+            <button class="skin-btn active" data-skin="classic" title="Classic Ceramic">
+              <span class="skin-preview classic-preview"></span>
+              Classic
+            </button>
+            <button class="skin-btn" data-skin="matcha" title="Matcha Latte">
+              <span class="skin-preview matcha-preview"></span>
+              Matcha
+            </button>
+            <button class="skin-btn" data-skin="strawberry" title="Strawberry Milkshake">
+              <span class="skin-preview strawberry-preview"></span>
+              Berry
+            </button>
+          </div>
+        </div>
+
+        <div class="welcome-instructions">
+          <p class="instruction-lead">Help <strong class="name-highlight">Pip</strong> escape. Watch out for <strong>grumpy mugs</strong>! Collect 🍬 <strong>Sugar Cubes</strong> for invincible <strong>Sugar Rush</strong>!</p>
+          <div class="welcome-hint-badge">
+            <kbd>SPACE</kbd> or <kbd>TAP SCREEN</kbd> to invert gravity
+          </div>
+        </div>
+
+        <div class="welcome-actions">
+          <button id="btn-start" class="btn btn-primary btn-lg">
+            <span class="btn-icon">⚡</span> Start Escape
+          </button>
+          <button id="btn-dashboard" class="btn btn-secondary btn-lg">
+            <span class="btn-icon">🏆</span> Leaderboard
+          </button>
+        </div>
+      </div>
+      <div class="welcome-decorations">
+        <div class="decor-bean bean-1">☕</div>
+        <div class="decor-bean bean-2">🥐</div>
+        <div class="decor-bean bean-3">🍩</div>
+        <div class="decor-bean bean-4">🍬</div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ GAME SCREEN ═══════════════ -->
+    <section id="screen-game" class="screen">
+      <canvas id="game-canvas"></canvas>
+      
+      <!-- Premium HUD -->
+      <div id="game-hud">
+        <div class="hud-item score-card">
+          <span class="hud-label">ML SAVED</span>
+          <span id="hud-score-value" class="hud-value">0</span><span class="hud-unit">ml</span>
+        </div>
+        <div class="hud-item record-card">
+          <span class="hud-label">BEST ESCAPE</span>
+          <span id="hud-best-value" class="hud-value">0</span><span class="hud-unit">ml</span>
+        </div>
+      </div>
+
+      <!-- Power-up Timer Hud (Sugar Rush) -->
+      <div id="hud-powerup" class="hud-powerup-bar" style="display: none;">
+        <div class="powerup-info">
+          <span class="powerup-icon">🍬</span>
+          <span class="powerup-name">SUGAR RUSH (INVINCIBLE x2)</span>
+        </div>
+        <div class="powerup-progress-bg">
+          <div id="powerup-progress-fill" class="powerup-progress-fill"></div>
+        </div>
+      </div>
+
+      <div id="game-start-overlay" class="overlay">
+        <div class="tap-hint-box">
+          <div class="tap-finger">👆</div>
+          <p class="overlay-text">Tap or Press <kbd>SPACE</kbd> to Start Flipped</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ GAME OVER SCREEN ═══════════════ -->
+    <section id="screen-gameover" class="screen">
+      <div class="gameover-container">
+        <div class="gameover-header">
+          <div class="gameover-emoji">😵</div>
+          <h2 class="gameover-title">Pip Spilled!</h2>
+          <p class="gameover-subtitle">You got splashed by a grumpy obstacle!</p>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-box">
+            <span class="stat-label">Coffee Saved</span>
+            <span id="gameover-score" class="stat-value">0</span>
+            <span class="stat-unit">milliliters</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Escape Rank</span>
+            <span id="gameover-rank" class="stat-value text-accent">-</span>
+            <span class="stat-unit">status</span>
+          </div>
+        </div>
+
+        <div class="leaderboard-submit-box">
+          <p class="submit-lead-text">Save your run to the cafe board:</p>
+          <form id="score-form" class="score-form">
+            <div class="input-wrapper">
+              <span class="input-icon">👤</span>
+              <input type="text" id="player-name" placeholder="Barista Name" maxlength="20" required autocomplete="off" />
+            </div>
+            <button type="submit" id="btn-submit-score" class="btn btn-primary">
+              Submit Run
+            </button>
+          </form>
+          <div id="submit-status" class="submit-status"></div>
+        </div>
+
+        <div class="gameover-actions">
+          <button id="btn-restart" class="btn btn-primary">
+            <span class="btn-icon">↻</span> Restart Shift
+          </button>
+          <button id="btn-gameover-dashboard" class="btn btn-secondary">
+            <span class="btn-icon">🏆</span> Leaderboard
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ DASHBOARD SCREEN ═══════════════ -->
+    <section id="screen-dashboard" class="screen">
+      <div class="dashboard-container">
+        <div class="dashboard-header">
+          <div>
+            <h2 class="dashboard-title">🏆 Cafe Leaderboard</h2>
+            <p class="dashboard-subtitle">Top Baristas & Coffee Escapists</p>
+          </div>
+          <button id="btn-back-home" class="btn btn-secondary btn-sm">
+            ← Main Menu
+          </button>
+        </div>
+
+        <div class="leaderboard-content-wrapper">
+          <div id="leaderboard-loading" class="loader-box">
+            <div class="coffee-loader">
+              <div class="loader-cup"></div>
+            </div>
+            <p>Brewing leaderboard data...</p>
+          </div>
+
+          <div id="leaderboard-table-container" class="table-container" style="display:none;">
+            <table class="leaderboard-table">
+              <thead>
+                <tr>
+                  <th style="width: 15%">Rank</th>
+                  <th style="width: 50%">Escapist</th>
+                  <th style="width: 35%; text-align: right;">Amount Saved</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboard-body">
+                <!-- Loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+
+          <div id="leaderboard-empty" class="leaderboard-status-msg" style="display:none;">
+            <p class="status-icon">☕</p>
+            <p class="status-title">Chalkboard is Empty</p>
+            <p>Run a game and register your high score first!</p>
+          </div>
+
+          <div id="leaderboard-error" class="leaderboard-status-msg" style="display:none;">
+            <p class="status-icon">⚠️</p>
+            <p class="status-title">Connection Offline</p>
+            <p>Displaying locally brewed high scores.</p>
+          </div>
+        </div>
+
+        <div id="pagination" class="pagination-controls" style="display:none;">
+          <button id="btn-prev-page" class="btn btn-secondary btn-sm" disabled>← Previous</button>
+          <span id="page-info" class="page-indicator">Page 1 of 1</span>
+          <button id="btn-next-page" class="btn btn-secondary btn-sm">Next →</button>
+        </div>
+
+        <div class="dashboard-footer">
+          <button id="btn-play-from-dash" class="btn btn-primary btn-block">
+            ⚡ Play Escape
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
